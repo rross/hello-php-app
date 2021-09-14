@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-app-php
+spec:
+  selector:
+    matchLabels:
+      app: hello-app-php
+  replicas: 1 # tells deployment to run 1 pods matching the template
+  template:   # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: hello-app-php
+    spec:
+      containers:
+      - name: hello-app-php
+        image: gcr.io/rrcicd/hello-app-php:v1 
+        ports:
+        - containerPort: 8080
+          name: server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-app-php-ingress
+spec:
+  type: LoadBalancer
+  selector:
+    app: hello-app-php
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
